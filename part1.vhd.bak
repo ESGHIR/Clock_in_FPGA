@@ -1,0 +1,35 @@
+library ieee;
+ use ieee.std_logic_1164.all;
+ use ieee.std_logic_unsigned.all;
+ entity part1 is 
+generic ( K : integer:= 10 ; n : integer:= 4 );
+port ( 
+key0,key1 : in std_logic; -- key0 ---> reset  & key1 ---> clk
+counter : out std_logic_vector(n-1 downto 0 );
+rellover : out std_logic);
+end entity ;
+architecture SIM of part1 is
+signal count : std_logic_vector(n-1 downto 0 ) := ( others =>'0' ) ;
+begin 
+process(key0,key1)
+begin
+if key0 = '1' then 
+count <= (others =>'0');
+else if rising_edge(key1) then 
+count <= count +1;
+----- modulo K------
+if count = k-1 then 
+count <= (others =>'0');
+end if;
+----- rellover-----
+if count = k-1 then 
+rellover <= '1';
+else
+rellover <= '0';
+end if;
+
+end if;
+end if;
+counter <=count ;
+end process;
+end SIM ;

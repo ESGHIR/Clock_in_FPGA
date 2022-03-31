@@ -1,0 +1,41 @@
+library ieee;
+ use ieee.std_logic_1164.all;
+ use ieee.std_logic_unsigned.all;
+ 
+ entity part2 is 
+port(
+key0,key1 : in std_logic; -- key0 ---> reset  & key1 ---> clk
+count0,count1,count2 : out std_logic_vector(3 downto 0);
+hex0,hex1,hex2 : out std_logic_vector(6 downto 0) ;
+LEDR : out std_logic  );
+end entity ;
+
+architecture SIM of part2 is
+
+component part1 is 
+generic ( K : integer:= 10 ; n : integer:= 4 );
+port ( 
+key0,key1 : in std_logic; -- key0 ---> reset  & key1 ---> clk
+counter : out std_logic_vector(n-1 downto 0 );
+rellover : out std_logic);
+end component ;
+
+component decoder_BCD is 
+port(
+SW : in std_logic_vector(3 downto 0);
+HEX: out std_logic_vector(6 downto 0) );
+end component ;
+signal rellover0,rellover1 :  std_logic;
+signal counter0,counter1,counter2 :  std_logic_vector(3 downto 0 );
+begin 
+X0 : part1 generic map (10,4) port map (key0,key1,counter0,rellover0);
+X1 : part1 generic map (10,4) port map (key0,rellover0,counter1,rellover1);
+X2 : part1 generic map (10,4) port map (key0,rellover1,counter2,LEDR);
+count0 <= counter0;
+count1 <= counter1;
+count2 <= counter2;
+--Afficheur--
+Y0: decoder_BCD port map (counter0,hex0);
+Y1: decoder_BCD port map (counter1,hex1);
+Y2: decoder_BCD port map (counter2,hex2);
+end SIM ;
